@@ -22,6 +22,7 @@ vector<int> CSP(int row, int col, int puzzle[9][9]){
     for (int j = 1; j < 10; j++){
         domain.push_back(j); // first start with everything in the domain
     }
+    //should this be row - 1 and col - 1? since it's actually different in the matrix or 
     for (int i = 0; i < 9; i++){
         if (puzzle[row][i] != 0){ // checks the row horitzontally 
             existingNums.push_back(puzzle[row][i]);
@@ -44,6 +45,37 @@ vector<int> CSP(int row, int col, int puzzle[9][9]){
     return domain;
 }
 
+//runs through domains for all empty spots in the puzzle
+/*void solve(int row, int col, int puzzle[9][9]){
+
+    int filledCount = 0;
+    //check if puzzle is already solved (contains no blank spaces)
+    for (int i = 0; i < 9; i++){
+        for (int j = 0; j < 9; j++){
+            if (puzzle[i][j] != 0){
+                filledCount++;
+            }
+        }
+    }
+
+    if (filledCount == 81){
+        cout << "no blank spaces" << endl;
+    }
+
+    //if we are in the last column, then move to the next row 
+    if (col == 9){
+        col = 0;
+        row++;
+    }
+
+    //create domain values for every blank space 
+    for (int i = 0; i < 9; i++){
+        if (CSP(row, col, puzzle).size() > 0){
+    } 
+    
+
+
+}*/
 
 int main(){
     int puzzle[9][9]; // 2D array to store the game
