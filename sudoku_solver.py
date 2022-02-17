@@ -1,16 +1,16 @@
 # Solving the Sudoku Problem - CS 411 Programming Assignment #1 
 
-# Resources: 
-# -https://www.geeksforgeeks.org/sudoku-backtracking-7/
-# -https://dev.to/christinamcmahon/use-backtracking-algorithm-to-solve-sudoku-270 
-
 # Sudoku Constraints: 
 # - every number must appear ONCE in each row and column 
 # - in the subsquare, every number 1-9 must be present 
+import sys 
 
 def check_constraints(sudoku_grid, row, column, value): 
-    count = 0
     
+    for i in range(9):
+        if sudoku_grid[row][i] == value:
+            return False
+        
     #check if value exists in the selected column 
     for i in range(0, 9):
         if sudoku_grid[i][column] == value:
@@ -19,21 +19,15 @@ def check_constraints(sudoku_grid, row, column, value):
             
     #check if value exists in sub-square 
     #get current row and column position + 3 to establish grid 
-    subRow = int(row - row%3)
-    subCol = int(column - column%3)
+    subRow = (row // 3) * 3
+    subCol = (column // 3) * 3
     
-    for i in range(0, 3):
-        for j in range(0, 3):
-            if sudoku_grid[i + subRow][j + subCol] == value:
-                #print("in sub")
+    for i in range(subRow, subRow + 3):
+        for j in range(subCol, subCol + 3):
+            if sudoku_grid[i][j] == value:
                 return False
-               
-    #check if value exists in row already 
-    if value in sudoku_grid[row]:
-        #print("in same row")
-        return False
-    else: 
-        return True
+            
+    return True
 
 #gets the position of what box needs to be solved 
 def find_empties(sudoku_grid):
@@ -41,49 +35,76 @@ def find_empties(sudoku_grid):
         for j in range(0, 9):
             if sudoku_grid[i][j] == 0:
                 return i, j
-    return -1 
+            
+    return None
 
 def solve_sudoku(sudoku_grid):
     to_solve = find_empties(sudoku_grid)
-    if not to_solve:
-        print("no empties")
+    if to_solve is None:
         return True
     else:
         curRow, curCol = to_solve
-
-    print(curRow, ", ", curCol)
     
+    #testing possible values, if constraints are met then set it in the grid 
+    #then move on to the next empty space 
     for i in range(1, 10):
-        if check_constraints(sudoku_grid, curRow, curCol, i) is True:
+        if check_constraints(sudoku_grid, curRow, curCol, i):
             sudoku_grid[curRow][curCol] = i 
             if solve_sudoku(sudoku_grid):
-                print("got it")
                 return True
+        
             sudoku_grid[curRow][curCol] = 0 #backtrack step 
-           
+            
     return False
 
-def print_grid(sudoku_grid):
+def write_grid(sudoku_grid):
     for i in range(9):
         for j in range(9):
             print(sudoku_grid[i][j], end = "|")
         print(" ")
                   
-def main():
+if __name__ == '__main__':
     
-    sudoku_grid = [
+    '''#accept file input + read file into matrix 
+    input_file = input("Enter sudoku .txt file here: ")
+    sudoku_grid = [ [ 0 for i in range(9) ] for j in range(9) ]
+    countRow = 0
+    countCol = 0
+    
+    with open (input_file, 'r') as f:
+        read_data = f.read()
+        content_list = read_data.split("\n")
+        output = [i for item in content_list for i in item]
+
+    print(output)
+    print(sudoku_grid)'''
+    
+    '''sudoku_grid = [
         [8, 0, 0, 9, 3, 0, 0, 0, 2],
         [0, 0, 9, 0, 0, 0, 0, 4, 0],
         [7, 0, 2, 1, 0, 0, 9, 6, 0],
         [2, 0, 0, 0, 0, 0, 0, 9, 0],
-        [0, 6, 0, 0, 0, 0, 0, 0, 5],
-        [0, 7, 0, 0, 0, 6, 0, 0, 5],
+        [0, 6, 0, 0, 0, 0, 0, 7, 0],
+        [0, 7, 0, 0, 0, 6, 0, 0, 5], #HAD THE WRONG THING OMG 
         [0, 2, 7, 0, 0, 8, 4, 0, 6],
         [0, 3, 0, 0, 0, 0, 5, 0, 0],
         [5, 0, 0, 0, 6, 2, 0, 0, 8]
+    ]'''
+    
+    sudoku_grid = [
+        [0, 0, 0, 6, 0, 0, 4, 0, 0],
+        [7, 0, 0, 0, 0, 3, 6, 0, 0],
+        [0, 0, 0, 0, 9, 1, 0, 8, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 5, 0, 1, 8, 0, 0, 0, 3],
+        [0, 0, 0, 3, 0, 6, 0, 4, 5],
+        [0, 4, 0, 2, 0, 0, 0, 6, 0],
+        [9, 0, 3, 0, 0, 0, 0, 0, 0],
+        [0, 2, 0, 0, 0, 0, 1, 0, 0]
     ]
-    solve_sudoku(sudoku_grid)
-    #find_empties(sudoku_grid)
-    print_grid(sudoku_grid)
+    
+    if solve_sudoku(sudoku_grid):
+        write_grid(sudoku_grid)
+    else:
+        print("puzzle can't be solved")
 
-main()
