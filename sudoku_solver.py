@@ -3,7 +3,9 @@
 # Sudoku Constraints: 
 # - every number must appear ONCE in each row and column 
 # - in the subsquare, every number 1-9 must be present 
-import sys 
+import sys
+
+from nbformat import read 
 
 def check_constraints(sudoku_grid, row, column, value): 
     
@@ -57,54 +59,36 @@ def solve_sudoku(sudoku_grid):
             
     return False
 
-def write_grid(sudoku_grid):
-    for i in range(9):
-        for j in range(9):
-            print(sudoku_grid[i][j], end = "|")
-        print(" ")
+def write_output_file(sudoku_grid): 
+    #writes solution to new text file 
+    with open('solution.txt', 'w') as f:
+        for i in sudoku_grid:
+            f.write('|' + '|'.join([str(a) for a in i]) + '|\n')
                   
 if __name__ == '__main__':
-    
-    '''#accept file input + read file into matrix 
+    #accept file input + read file into matrix 
     input_file = input("Enter sudoku .txt file here: ")
-    sudoku_grid = [ [ 0 for i in range(9) ] for j in range(9) ]
-    countRow = 0
-    countCol = 0
+    sudoku_grid = []
     
+    #reads in text file and parses so that we have a matrix to work with 
     with open (input_file, 'r') as f:
         read_data = f.read()
         content_list = read_data.split("\n")
-        output = [i for item in content_list for i in item]
-
-    print(output)
-    print(sudoku_grid)'''
-    
-    '''sudoku_grid = [
-        [8, 0, 0, 9, 3, 0, 0, 0, 2],
-        [0, 0, 9, 0, 0, 0, 0, 4, 0],
-        [7, 0, 2, 1, 0, 0, 9, 6, 0],
-        [2, 0, 0, 0, 0, 0, 0, 9, 0],
-        [0, 6, 0, 0, 0, 0, 0, 7, 0],
-        [0, 7, 0, 0, 0, 6, 0, 0, 5], #HAD THE WRONG THING OMG 
-        [0, 2, 7, 0, 0, 8, 4, 0, 6],
-        [0, 3, 0, 0, 0, 0, 5, 0, 0],
-        [5, 0, 0, 0, 6, 2, 0, 0, 8]
-    ]'''
-    
-    sudoku_grid = [
-        [0, 0, 0, 6, 0, 0, 4, 0, 0],
-        [7, 0, 0, 0, 0, 3, 6, 0, 0],
-        [0, 0, 0, 0, 9, 1, 0, 8, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 5, 0, 1, 8, 0, 0, 0, 3],
-        [0, 0, 0, 3, 0, 6, 0, 4, 5],
-        [0, 4, 0, 2, 0, 0, 0, 6, 0],
-        [9, 0, 3, 0, 0, 0, 0, 0, 0],
-        [0, 2, 0, 0, 0, 0, 1, 0, 0]
-    ]
+        row = []
+        
+        for j in range(0, len(content_list)):
+            output = content_list[j]
+            row = []
+            for i in range(1, len(output)):
+                if output[i].isdigit():
+                    row.append(int(output[i]))
+                elif output[i] == '|' and output[i-1] == '|':
+                    row.append(0)
+            sudoku_grid.append(row)       
     
     if solve_sudoku(sudoku_grid):
-        write_grid(sudoku_grid)
+        write_output_file(sudoku_grid)
+        print("Puzzle solved successfully! : )")
     else:
-        print("puzzle can't be solved")
+        print("Puzzle can't be solved : (")
 
