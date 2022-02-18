@@ -1,14 +1,17 @@
 # Solving the Sudoku Problem - CS 411 Programming Assignment #1 
-
-# Sudoku Constraints: 
-# - every number must appear ONCE in each row and column 
-# - in the subsquare, every number 1-9 must be present 
+# Megan Mehta and Ifra Rabbani
+ 
 import sys
 
 from nbformat import read 
 
+# Sudoku Constraints: 
+# - every number must appear ONCE in each row and column 
+# - in the subsquare, every number 1-9 must be present 
+
 def check_constraints(sudoku_grid, row, column, value): 
     
+    #check if value exists in the selected row 
     for i in range(9):
         if sudoku_grid[row][i] == value:
             return False
@@ -16,11 +19,9 @@ def check_constraints(sudoku_grid, row, column, value):
     #check if value exists in the selected column 
     for i in range(0, 9):
         if sudoku_grid[i][column] == value:
-            #print("in same column")
             return False  
             
     #check if value exists in sub-square 
-    #get current row and column position + 3 to establish grid 
     subRow = (row // 3) * 3
     subCol = (column // 3) * 3
     
@@ -29,7 +30,7 @@ def check_constraints(sudoku_grid, row, column, value):
             if sudoku_grid[i][j] == value:
                 return False
             
-    return True
+    return True #all no constraints return False, then return True -> the move is valid 
 
 #gets the position of what box needs to be solved 
 def find_empties(sudoku_grid):
@@ -40,12 +41,13 @@ def find_empties(sudoku_grid):
             
     return None
 
+#iterates through all of the boxes that need to be solved 
 def solve_sudoku(sudoku_grid):
     to_solve = find_empties(sudoku_grid)
     if to_solve is None:
         return True
     else:
-        curRow, curCol = to_solve
+        curRow, curCol = to_solve #assign the current box we're solving for 
     
     #testing possible values, if constraints are met then set it in the grid 
     #then move on to the next empty space 
@@ -60,11 +62,13 @@ def solve_sudoku(sudoku_grid):
     return False
 
 def write_output_file(sudoku_grid): 
-    #writes solution to new text file 
+    
+    #writes solution to new text file -> solution.txt
     with open('solution.txt', 'w') as f:
         for i in sudoku_grid:
             f.write('|' + '|'.join([str(a) for a in i]) + '|\n')
                   
+#main function
 if __name__ == '__main__':
     #accept file input + read file into matrix 
     input_file = input("Enter sudoku .txt file here: ")
@@ -86,6 +90,7 @@ if __name__ == '__main__':
                     row.append(0)
             sudoku_grid.append(row)       
     
+    #if puzzle can't be solved, print statement will occur
     if solve_sudoku(sudoku_grid):
         write_output_file(sudoku_grid)
         print("Puzzle solved successfully! : )")
